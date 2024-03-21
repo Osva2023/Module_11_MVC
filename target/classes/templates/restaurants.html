@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <title>Restaurantes</title>
+  </head>
+  <body>
+    <h1>Listado de Restaurantes</h1>
+    <button class="btn btn-primary" onclick="createRestaurant()">Create</button>
+    <div class="tableContainer">
+      <table class="table table-striped myTable">
+        <thead>
+          <tr>
+            <th>ID del Restaurante</th>
+            <th>ID de la Dirección</th>
+            <th>Nombre</th>
+            <th>Rango de Precios</th>
+            <th>ID del Usuario</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Utilizamos Thymeleaf para iterar sobre la lista de restaurantes y mostrar cada uno -->
+          <tr th:each="restaurant : ${restaurants}">
+            <td th:text="${restaurant.restaurant_id}">ID del Restaurante</td>
+            <td th:text="${restaurant.address.id}">ID de la Dirección</td>
+            <td th:text="${restaurant.name}">Nombre</td>
+            <td th:text="${restaurant.price_range}">Rango de Precios</td>
+            <td th:text="${restaurant.user.id}">ID del Usuario</td>
+            <td>
+              <button onclick="editRestaurant(${restaurant.restaurant_id})">Edit</button>
+              <button onclick="deleteRestaurant(${restaurant.restaurant_id})">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- Start of form -->
+    <div class="formContainer" style="display: none">
+      <form
+        id="createRestaurantForm"
+        style="display: none"
+        onsubmit="event.preventDefault(); submitForm();"
+      >
+        <h2>Create Restaurant</h2>
+
+        <label for="name">Name:</label><br />
+        <input type="text" id="name" name="name" /><br />
+
+        <label for="priceRange">Price Range:</label><br />
+        <input type="text" id="priceRange" name="priceRange" /><br />
+
+        <label for="phone">Phone:</label><br />
+        <input type="text" id="phone" name="phone" /><br />
+
+        <label for="email">Email:</label><br />
+        <input type="text" id="email" name="email" /><br />
+
+        <h3>Address</h3>
+        <label for="streetAddress">Street Address:</label><br />
+        <input type="text" id="streetAddress" name="streetAddress" /><br />
+
+        <label for="city">City:</label><br />
+        <input type="text" id="city" name="city" /><br />
+
+        <label for="postalCode">Postal Code:</label><br />
+        <input type="text" id="postalCode" name="postalCode" /><br />
+
+        <h3>User</h3>
+        <label for="userName">Name:</label><br />
+        <input type="text" id="userName" name="userName" /><br />
+
+        <label for="userEmail">Email:</label><br />
+        <input type="text" id="userEmail" name="userEmail" /><br />
+
+        <label for="password">Password:</label><br />
+        <input type="password" id="password" name="password" /><br />
+
+        <input type="submit" value="Submit" class="submitBtn" />
+      </form>
+    </div>
+    <script>
+      function createRestaurant() {
+        document.querySelector(".formContainer").style.display = "block";
+        document.getElementById("createRestaurantForm").style.display = "block";
+      }
+    </script>
+    <script src="/formHandler.js"></script>
+  </body>
+</html>
