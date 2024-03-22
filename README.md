@@ -16,7 +16,7 @@ To run this application properly on your local machine, you'll need Java 17 and 
 
     ----------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-    Codeboxx.SQL2024
+
    
     ________________________________>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>..
     
@@ -42,3 +42,12 @@ To run this application properly on your local machine, you'll need Java 17 and 
     -------------->>>>>>>>>>>>>>>---------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>----------------------->>>>>>>>>>>>>>>
 
     
+
+"SQL is a programming language, or more precisely, a domain-specific language used for manipulating databases. It is designed to perform specific queries for database management (primarily relational).
+
+The difference between MySQL and SQLite lies in their intended use cases. MySQL is designed for more complex environments, allowing for more difficult operations across multiple databases, while SQLite is a portable version with a storage system that makes it simpler, lighter, and more suitable for desktop environments or simpler applications.
+
+Primary keys are used to uniquely identify a record in a table. They allow for the identification of a unique element or object contained within the database. Foreign keys, on the other hand, are used to relate an element of one table to another. They are typically within an element, referencing another existing object within the same database but in other tables. For example, consider a user with a primary key identifier (e.g., 03) and whose specific address, with a foreign key, is (01). This (01) leads to an address table, where (01) further specifies numbers, streets, municipalities, states, districts, GPS location, or some other element.
+
+In a database, tables may have relationships such as many-to-many, one-to-many, or one-to-one. For instance, in an e-commerce database, a customer may have multiple orders (one-to-many), and each order may contain multiple products (also one-to-many). Additionally, a product may belong to multiple categories, while each category may contain multiple products (many-to-many). These relationships help establish the structure and integrity of the database."
+
