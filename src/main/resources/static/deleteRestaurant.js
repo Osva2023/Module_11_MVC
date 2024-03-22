@@ -9,9 +9,14 @@ function deleteRestaurant(restaurantId) {
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    bootbox.alert('Success: Restaurant deleted');
-                    // Reload the page
-                    location.reload();
+                    bootbox.alert({
+                        message: 'Success: Restaurant deleted',
+                        callback: function () {
+                            console.log("OK button clicked");
+                            // Reload the page
+                            location.reload();
+                        }
+                    });
                 } else {
                     console.error('Error:', data.status);
                 }
