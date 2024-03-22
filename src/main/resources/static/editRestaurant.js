@@ -7,11 +7,11 @@ function editRestaurant(id) {
     .then((data) => {
       console.log("Edit restaurant data:", data);
       document.getElementById("editName").value = data.name;
-      document.getElementById("editStreetAddress").value =
+      //document.getElementById("editStreetAddress").value =
         data.address.street_address;
-      document.getElementById("editCity").value = data.address.city;
-      document.getElementById("editPostalCode").value =
-        data.address.postal_code;
+      //document.getElementById("editCity").value = data.address.city;
+      //document.getElementById("editPostalCode").value =
+        //data.address.postal_code;
       document.getElementById("editEmail").value = data.email;
       document.getElementById("editPhone").value = data.phone;
       document.getElementById("editPriceRange").value = data.price_range;
@@ -29,9 +29,9 @@ function submitEdition(event) {
   // Get the form data
 
   var name = document.getElementById("editName").value;
-  var streetAddress = document.getElementById("editStreetAddress").value;
-  var city = document.getElementById("editCity").value;
-  var postalCode = document.getElementById("editPostalCode").value;
+  //var streetAddress = document.getElementById("editStreetAddress").value;
+  //var city = document.getElementById("editCity").value;
+  //var postalCode = document.getElementById("editPostalCode").value;
   var email = document.getElementById("editEmail").value;
   var phone = document.getElementById("editPhone").value;
   var priceRange = document.getElementById("editPriceRange").value;
@@ -39,11 +39,7 @@ function submitEdition(event) {
   // Create an object with the form data
   var data = {
     name: name,
-    address: {
-      street_address: streetAddress,
-      city: city,
-      postal_code: postalCode,
-    },
+    
     email: email,
     phone: phone,
     price_range: priceRange,
@@ -52,7 +48,7 @@ function submitEdition(event) {
   console.log("Data being sent to server:", data); // Log the data being sent to the server
   // Send a PUT request with the form data
   fetch(`/backoffice/restaurants/${currentRestaurantId}`, {
-    method: "PUT",
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },

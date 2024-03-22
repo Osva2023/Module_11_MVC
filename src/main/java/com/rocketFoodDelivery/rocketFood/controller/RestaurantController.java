@@ -1,5 +1,6 @@
 package com.rocketFoodDelivery.rocketFood.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,38 +46,47 @@ public class RestaurantController {
         return "restaurants"; // Esto renderizará la vista "restaurants.html"
     }
 
-    @PostMapping("/restaurants")
-    @Transactional
-    public ResponseEntity<String> createRestaurant(@RequestBody Map<String, Object> payload) {
-        if (payload.get("address") instanceof Map && payload.get("user") instanceof Map) {
-            Map<String, String> addressData = (Map<String, String>) payload.get("address");
-            Address address = new Address();
-            address.setStreet_address(addressData.get("streetAddress"));
-            address.setCity(addressData.get("city"));
-            address.setPostal_code(addressData.get("postalCode"));
-            addressRepository.save(address);
+   @PostMapping("/restaurants")
+@Transactional
+public ResponseEntity<Map<String, String>> createRestaurant(@RequestBody Map<String, Object> payload) {
+    Map<String, String> response = new HashMap<>();
+    if (payload.get("address") instanceof Map && payload.get("user") instanceof Map) {
+        Map<String, String> addressData = (Map<String, String>) payload.get("address");
+        Address address = new Address();
+        address.setStreet_address(addressData.get("streetAddress"));
+        address.setCity(addressData.get("city"));
+        address.setPostal_code(addressData.get("postalCode"));
+        addressRepository.save(address);
 
-            Map<String, String> userData = (Map<String, String>) payload.get("user");
-            UserEntity user = new UserEntity();
+        Map<String, String> userData = (Map<String, String>) payload.get("user");
+        UserEntity user;
+        Optional<UserEntity> userOptional = userRepository.findByEmail(userData.get("email"));
+        if (userOptional.isPresent()) {
+            user = userOptional.get();
+        } else {
+            user = new UserEntity();
             user.setName(userData.get("name"));
             user.setEmail(userData.get("email"));
             user.setPassword(userData.get("password")); // Make sure to hash the password before saving
             userRepository.save(user);
-
-            Restaurants restaurant = new Restaurants();
-            restaurant.setAddress(address);
-            restaurant.setUser(user);
-            restaurant.setName((String) payload.get("name"));
-            restaurant.setPrice_range(Integer.parseInt((String) payload.get("priceRange")));
-            restaurant.setPhone((String) payload.get("phone"));
-            restaurant.setEmail((String) payload.get("email"));
-            restaurantRepository.save(restaurant);
-
-            return new ResponseEntity<>("Restaurant created successfully", HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>("Invalid payload", HttpStatus.BAD_REQUEST);
         }
+
+        Restaurants restaurant = new Restaurants();
+        restaurant.setAddress(address);
+        restaurant.setUser(user);
+        restaurant.setName((String) payload.get("name"));
+        restaurant.setPrice_range(Integer.parseInt((String) payload.get("priceRange")));
+        restaurant.setPhone((String) payload.get("phone"));
+        restaurant.setEmail((String) payload.get("email"));
+        restaurantRepository.save(restaurant);
+
+        response.put("message", "Restaurant created successfully");
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    } else {
+        response.put("message", "Invalid payload");
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+}
 
     @GetMapping("/restaurants/{id}")
     public ResponseEntity<Restaurants> getRestaurant(@PathVariable Integer id) {
@@ -86,30 +97,23 @@ public class RestaurantController {
             return new ResponseEntity<>(restaurant, HttpStatus.OK);
         }
     }
-    @PutMapping("/restaurants/{id}")
-@Transactional
-public ResponseEntity<Restaurants> updateRestaurant(@PathVariable Integer id, @RequestBody Map<String, Object> payload) {
-    Optional<Restaurants> restaurantOptional = restaurantRepository.findById(id);
-
-    if (!restaurantOptional.isPresent())
-        return ResponseEntity.notFound().build();
-
-    Restaurants restaurant = restaurantOptional.get();
-    restaurant.setName(payload.get("name").toString());
-    restaurant.setEmail(payload.get("email").toString());
-    restaurant.setPhone(payload.get("phone").toString());
-    restaurant.setPrice_range(Integer.parseInt(payload.get("price_range").toString()));
-
-    Map<String, Object> addressPayload = (Map<String, Object>) payload.get("address");
-    Address address = restaurant.getAddress();
-    address.setStreet_address(addressPayload.get("street_address").toString());
-    address.setCity(addressPayload.get("city").toString());
-    address.setPostal_code(addressPayload.get("postal_code").toString());
-
-    restaurant = restaurantRepository.save(restaurant);
-
-    return ResponseEntity.ok(restaurant);
-}
+    @RequestMapping(value = "/restaurants/{id}", method = RequestMethod.PATCH)
+    @Transactional
+    public ResponseEntity<Restaurants> updateRestaurant(@PathVariable Integer id, @RequestBody Map<String, Object> payload) {
+        Optional<Restaurants> restaurantData = restaurantRepository.findById(id);
+    
+        if (restaurantData.isPresent()) {
+            Restaurants _restaurant = restaurantData.get();
+            _restaurant.setName((String) payload.get("name"));
+            _restaurant.setEmail((String) payload.get("email"));
+            _restaurant.setPhone((String) payload.get("phone"));
+            _restaurant.setPrice_range(Integer.parseInt((String) payload.get("price_range")));
+    
+            return new ResponseEntity<>(restaurantRepository.save(_restaurant), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 @DeleteMapping("/restaurants/{id}")
 public ResponseEntity<?> deleteRestaurant(@PathVariable Integer id) {
     Optional<Restaurants> restaurantOptional = restaurantRepository.findById(id);
