@@ -10,31 +10,39 @@
     <title>Restaurantes</title>
   </head>
   <body>
-    <h1>Listado de Restaurantes</h1>
+    <h1>Restaurants</h1>
     <button class="btn btn-primary" onclick="createRestaurant()">Create</button>
     <div class="tableContainer">
       <table class="table table-striped myTable">
         <thead>
           <tr>
-            <th>ID del Restaurante</th>
-            <th>ID de la Dirección</th>
-            <th>Nombre</th>
-            <th>Rango de Precios</th>
-            <th>ID del Usuario</th>
+            <th>Restaurant ID</th>
+            <th>Address ID</th>
+            <th>Restaurant Name</th>
+            <th>Price Range</th>
+            <th>User ID</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <!-- Utilizamos Thymeleaf para iterar sobre la lista de restaurantes y mostrar cada uno -->
           <tr th:each="restaurant : ${restaurants}">
-            <td th:text="${restaurant.restaurant_id}">ID del Restaurante</td>
-            <td th:text="${restaurant.address.id}">ID de la Dirección</td>
-            <td th:text="${restaurant.name}">Nombre</td>
-            <td th:text="${restaurant.price_range}">Rango de Precios</td>
-            <td th:text="${restaurant.user.id}">ID del Usuario</td>
+            <td th:text="${restaurant.restaurant_id}">Restaurant ID</td>
+            <td th:text="${restaurant.address.id}">Address ID</td>
+            <td th:text="${restaurant.name}">Restaurant Name</td>
+            <td th:text="${restaurant.price_range}">Price Range</td>
+            <td th:text="${restaurant.user.id}">User ID</td>
             <td>
-              <button onclick="editRestaurant(${restaurant.restaurant_id})">Edit</button>
-              <button onclick="deleteRestaurant(${restaurant.restaurant_id})">Delete</button>
+              <button
+                th:attr="onclick='editRestaurant(\'' + ${restaurant.restaurant_id} + '\')'"
+              >
+                Edit
+              </button>
+              <button
+                th:attr="onclick='deleteRestaurant(\'' + ${restaurant.restaurant_id} + '\')'"
+              >
+                Delete
+              </button>
             </td>
           </tr>
         </tbody>
@@ -84,12 +92,57 @@
         <input type="submit" value="Submit" class="submitBtn" />
       </form>
     </div>
+    <!-- End of form -->
+    <!-- Start of edit form -->
+    <div
+      class="EditformContainer"
+      style="
+        display: none;
+        border: 1px solid black;
+        padding: 20px;
+        width: 300px;
+        margin: 0 auto;
+      "
+    >
+      <h2>Edit Restaurant Info</h2>
+      <form
+        id="editRestaurantForm"
+        style="display: none"
+        onsubmit="event.preventDefault(); submitEdition(event);"
+      >
+        <label for="editName">Name:</label><br />
+        <input type="text" id="editName" /><br />
+        <label for="editStreetAddress">Street Address:</label><br />
+        <input type="text" id="editStreetAddress" /><br />
+        <label for="editCity">City:</label><br />
+        <input type="text" id="editCity" /><br />
+        <label for="editPostalCode">Postal Code:</label><br />
+        <input type="text" id="editPostalCode" /><br />
+        <label for="editEmail">Email:</label><br />
+        <input type="text" id="editEmail" /><br />
+        <label for="editPhone">Phone:</label><br />
+        <input type="text" id="editPhone" /><br />
+        <label for="editPriceRange">Price Range:</label><br />
+        <input type="text" id="editPriceRange" /><br />
+        <input
+          type="submit"
+          value="Submit Edition"
+          style="background-color: blue; color: white"
+        />
+      </form>
+    </div>
+    <!-- End of edit form -->
     <script>
       function createRestaurant() {
         document.querySelector(".formContainer").style.display = "block";
         document.getElementById("createRestaurantForm").style.display = "block";
       }
     </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
     <script src="/formHandler.js"></script>
+    <script src="/editRestaurant.js"></script>
+    <script src="/deleteRestaurant.js"></script>
   </body>
 </html>
